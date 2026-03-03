@@ -12,6 +12,29 @@ A docs-as-code demo comparing two GitHub release strategies.
 | **Artifacts** | GitHub Release with built docs attached | GitHub Pages deployed on merge |
 | **Docs** | [Strategy 1 Guide](docs/strategy-1-tag-based.md) | [Strategy 2 Guide](docs/strategy-2-branch-based.md) |
 
+## Pros & Cons
+
+### Strategy 1: Tag-Based Release
+
+| Pros | Cons |
+|---|---|
+| Simple branch model — just `main`, no release branch to maintain | Approval happens _after_ code is on `main` — you're approving the release, not the change |
+| Tags are immutable snapshots — easy to audit exactly what was released | Requires discipline around tagging — accidental tags trigger workflows |
+| GitHub Environments provide a dedicated deployment review UI with history | Environment required reviewers not available on all plan tiers (private repos) |
+| Artifacts attached directly to GitHub Releases — easy to download and distribute | Reviewers see a deployment approval screen, not a code diff |
+| Auto-generated release notes from commits between tags | Harder to preview what will be included in a release before tagging |
+
+### Strategy 2: Branch-Based Release (PR to Release)
+
+| Pros | Cons |
+|---|---|
+| Reviewers see the full diff of what changed — approval happens _before_ it reaches release | Need to maintain a long-lived `release` branch |
+| Uses the same PR workflow every developer already knows | Merge direction matters — must always go `main → release`, never reverse |
+| Works on all GitHub plans — no special tier needed | If many changes accumulate on `main`, the PR diff can be overwhelming |
+| Better audit trail — PR conversations, inline comments, and linked issues in one place | No dedicated deployment history UI like Environments provide |
+| GitOps-friendly — branch state _is_ the source of truth for what's released | Version number is manual (in PR title) rather than derived from a tag |
+| CI status checks validate the build before merge is allowed | Requires branch protection rules to enforce the approval gate |
+
 ## Quick Start
 
 ### Try Strategy 1 — Tag-Based Release
