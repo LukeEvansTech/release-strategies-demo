@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Release Strategies Demo — Docs Site</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 4rem auto; padding: 0 1rem; color: #1a1a1a; }
+    h1 { border-bottom: 2px solid #0969da; padding-bottom: 0.5rem; }
+    .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.85rem; font-weight: 600; }
+    .strategy-1 { background: #ddf4ff; color: #0969da; }
+    .strategy-2 { background: #dafbe1; color: #1a7f37; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid #d1d9e0; }
+    th { background: #f6f8fa; }
+  </style>
+</head>
+<body>
+  <h1>Docs-as-Code Release Strategies</h1>
+  <p>This is a sample documentation site used to demonstrate two release workflows.</p>
+
+  <h2>Strategies</h2>
+  <table>
+    <thead>
+      <tr><th>Strategy</th><th>Mechanism</th><th>Approval</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge strategy-1">Tag-Based</span></td>
+        <td>Push a semver git tag to trigger release</td>
+        <td>GitHub Environment with required reviewers</td>
+      </tr>
+      <tr>
+        <td><span class="badge strategy-2">Branch-Based</span></td>
+        <td>PR from <code>main</code> to <code>release</code></td>
+        <td>Pull Request review + branch protection</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Version</h2>
+  <p>Current version: <strong>0.1.0</strong></p>
+</body>
+</html>

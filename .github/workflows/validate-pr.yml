@@ -1,0 +1,31 @@
+name: "Strategy 2: Validate PR to Release"
+
+# Runs on PRs targeting the release branch to provide a CI check
+on:
+  pull_request:
+    branches:
+      - release
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  validate:
+    name: Validate docs build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build check
+        run: |
+          echo "Validating docs site builds cleanly..."
+          test -f site/index.html
+          mkdir -p _output
+          cp site/index.html _output/index.html
+          echo "Build validation passed"
+
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-preview
+          path: _output/

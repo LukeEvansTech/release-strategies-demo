@@ -1,0 +1,64 @@
+name: "Strategy 1: Tag-Based Release"
+
+# Triggered when a semver tag is pushed (e.g. v1.0.0, v2.3.1)
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+permissions:
+  contents: write
+
+jobs:
+  # ── Step 1: Build the docs site ──────────────────────────────────
+  build:
+    name: Build docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build site artifact
+        run: |
+          mkdir -p _output
+          # Stamp the version from the git tag into the site
+          TAG="${GITHUB_REF#refs/tags/}"
+          sed "s/0\.1\.0/${TAG#v}/" site/index.html > _output/index.html
+          echo "Built docs for ${TAG}"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-site
+          path: _output/
+
+  # ── Step 2: Approval gate via GitHub Environment ─────────────────
+  # Configure the "production" environment in Settings → Environments
+  # and add required reviewers to create the approval gate.
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production          # ← requires manual approval
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-site
+          path: _output/
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+
+          # Package the built site
+          tar -czf docs-site-${TAG}.tar.gz -C _output .
+
+          # Create the release with the artifact attached
+          gh release create "${TAG}" \
+            docs-site-${TAG}.tar.gz \
+            --title "Release ${TAG}" \
+            --generate-notes
